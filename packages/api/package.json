@@ -17,6 +17,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@financial-planner/db": "workspace:*",
     "express": "^5.2.1"
   }
 }

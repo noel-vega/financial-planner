@@ -14,6 +14,9 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
+  beforeLoad: () => {
+    getListGoals()
+  },
   component: RootComponent,
 });
 
