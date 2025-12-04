@@ -10,14 +10,23 @@
     "format": "biome format",
     "check": "biome check"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "devDependencies": {
     "@biomejs/biome": "2.3.8",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^24.10.1",
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@financial-planner/db": "workspace:*",
+    "@financial-planner/db": "*",
+    "@trpc/server": "^11.7.2",
+    "cors": "^2.8.5",
     "express": "^5.2.1"
   }
 }

@@ -1,22 +1,17 @@
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
-
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import { Navigation } from "../components/Navigation";
 import { DataProvider } from "../contexts/DataContext";
 
-import type { QueryClient } from "@tanstack/react-query";
-import { getListGoals } from "@/features/goals/api/test";
+import { type QueryClient } from "@tanstack/react-query";
 
 interface MyRouterContext {
   queryClient: QueryClient;
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  beforeLoad: () => {
-    getListGoals()
-  },
   component: RootComponent,
 });
 

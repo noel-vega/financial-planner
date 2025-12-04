@@ -1,38 +1,19 @@
 import 'dotenv/config';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { eq } from 'drizzle-orm';
-import { usersTable } from './db/schema.js';
-
-const db = drizzle(process.env.DATABASE_URL!);
+import { usersTable, type User } from './db/schema.js';
+import { db } from './index.js';
 
 async function main() {
-  const user: typeof usersTable.$inferInsert = {
-    name: 'John',
-    age: 30,
-    email: 'john@example.com',
-  };
+  const users: User[] = [{
+    name: 'Noel',
+    biWeeklyIncome: 2_350,
+  },
+  {
+    name: 'Grecia',
+    biWeeklyIncome: 0,
+  }
+  ];
 
-  await db.insert(usersTable).values(user);
-  console.log('New user created!')
-
-  const users = await db.select().from(usersTable);
-  console.log('Getting all users from the database: ', users)
-  /*
-  const users: {
-    id: number;
-    name: string;
-    age: number;
-    email: string;
-  }[]
-  */
-
-  await db
-    .update(usersTable)
-    .set({
-      age: 31,
-    })
-    .where(eq(usersTable.email, user.email));
-  console.log('User info updated!')
+  await db.insert(usersTable).values(users);
 }
 
 main();

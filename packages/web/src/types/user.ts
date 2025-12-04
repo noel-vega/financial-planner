@@ -1,47 +1,29 @@
-export type PayFrequency = "weekly" | "bi-weekly" | "monthly" | "annual";
+import type { User } from "@financial-planner/api";
 
-export interface User {
-	id: string;
-	name: string;
-	incomeAmount: number;
-	payFrequency: PayFrequency;
-}
+export type PayFrequency = "weekly" | "bi-weekly" | "monthly";
 
 export const PAY_FREQUENCIES: PayFrequency[] = [
-	"weekly",
-	"bi-weekly",
-	"monthly",
-	"annual",
+  "weekly",
+  "bi-weekly",
+  "monthly",
 ];
 
 /**
  * Convert any pay frequency to monthly income
  */
 export function calculateMonthlyIncome(
-	amount: number,
-	frequency: PayFrequency,
+  biWeeklyIncome: number,
 ): number {
-	switch (frequency) {
-		case "weekly":
-			return (amount * 52) / 12;
-		case "bi-weekly":
-			return (amount * 26) / 12;
-		case "monthly":
-			return amount;
-		case "annual":
-			return amount / 12;
-		default:
-			return 0;
-	}
+  return (biWeeklyIncome * 26) / 12;
 }
 
 /**
  * Calculate total monthly income from multiple users
  */
 export function calculateTotalMonthlyIncome(users: User[]): number {
-	return users.reduce(
-		(total, user) =>
-			total + calculateMonthlyIncome(user.incomeAmount, user.payFrequency),
-		0,
-	);
+  return users.reduce(
+    (total, user) =>
+      total + calculateMonthlyIncome(user.biWeeklyIncome),
+    0,
+  );
 }
