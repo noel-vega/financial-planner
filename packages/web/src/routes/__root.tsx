@@ -7,34 +7,35 @@ import { Navigation } from "../components/Navigation";
 import { DataProvider } from "../contexts/DataContext";
 
 import type { QueryClient } from "@tanstack/react-query";
+import { getListGoals } from "@/features/goals/api/test";
 
 interface MyRouterContext {
-	queryClient: QueryClient;
+  queryClient: QueryClient;
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-	component: RootComponent,
+  component: RootComponent,
 });
 
 function RootComponent() {
-	return (
-		<DataProvider>
-			<div className="min-h-screen w-full overflow-x-hidden">
-				<Navigation />
-				<Outlet />
-			</div>
-			<TanStackDevtools
-				config={{
-					position: "bottom-right",
-				}}
-				plugins={[
-					{
-						name: "Tanstack Router",
-						render: <TanStackRouterDevtoolsPanel />,
-					},
-					TanStackQueryDevtools,
-				]}
-			/>
-		</DataProvider>
-	);
+  return (
+    <DataProvider>
+      <div className="min-h-screen w-full overflow-x-hidden">
+        <Navigation />
+        <Outlet />
+      </div>
+      <TanStackDevtools
+        config={{
+          position: "bottom-right",
+        }}
+        plugins={[
+          {
+            name: "Tanstack Router",
+            render: <TanStackRouterDevtoolsPanel />,
+          },
+          TanStackQueryDevtools,
+        ]}
+      />
+    </DataProvider>
+  );
 }

@@ -1,5 +1,6 @@
 {
-  "name": "financial-planner-web",
+  "name": "@financial-planner/web",
+  "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
