@@ -1,8 +1,7 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Receipt } from "lucide-react";
-import { AddExpenseForm } from "@/components/ExpenseForm";
-import { ExpenseChart } from "@/components/ExpenseChart";
+import { AddExpenseForm } from "@/components/AddExpenseForm";
 import { ExpenseTable } from "@/components/ExpenseTable";
 import { ExpenseCardList } from "@/components/ExpenseCardList";
 import { Input } from "@/components/ui/input";
@@ -69,7 +68,7 @@ export function ExpenseList({ expenses }: ExpenseListProps) {
       ) : (
         <div className="space-y-6">
           {/* Pie Chart */}
-          <ExpenseChart expenses={expenses} />
+          {/* <ExpenseChart expenses={expenses} /> */}
 
           {/* Filters - Shared by both mobile and desktop */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">

@@ -89,7 +89,7 @@ export function AddExpenseForm({ trigger }: ExpenseFormProps) {
                 {...form.register("amount", { valueAsNumber: true })}
               />
             </div>
-            <div className="grid gap-2">
+            <div className="grid gap-2 border-8">
               <Label htmlFor="category">Category</Label>
               <Controller
                 control={form.control}
