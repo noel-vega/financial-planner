@@ -1,17 +1,9 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import {
-  initialExpenses,
-  initialGoals,
-} from "../data/initial-data";
-import type { Expense } from "../types/expense";
 import type { Goal, Contribution } from "../types/goal";
+import { initialGoals } from "@/data/initial-data";
 
 interface DataContextType {
-  expenses: Expense[];
   goals: Goal[];
-  addExpense: (expense: Omit<Expense, "id">) => void;
-  updateExpense: (expense: Expense) => void;
-  deleteExpense: (id: string) => void;
   addGoal: (goal: Omit<Goal, "id">) => void;
   updateGoal: (goal: Goal) => void;
   deleteGoal: (id: string) => void;
@@ -26,31 +18,9 @@ interface DataContextType {
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export function DataProvider({ children }: { children: ReactNode }) {
-  const [expenses, setExpenses] = useState<Expense[]>(initialExpenses);
   const [goals, setGoals] = useState<Goal[]>(initialGoals);
 
   // Calculate total monthly income from all users
-
-
-  const addExpense = (expense: Omit<Expense, "id">) => {
-    const newExpense: Expense = {
-      ...expense,
-      id: crypto.randomUUID(),
-    };
-    setExpenses((prev) => [...prev, newExpense]);
-  };
-
-  const updateExpense = (updatedExpense: Expense) => {
-    setExpenses((prev) =>
-      prev.map((expense) =>
-        expense.id === updatedExpense.id ? updatedExpense : expense,
-      ),
-    );
-  };
-
-  const deleteExpense = (id: string) => {
-    setExpenses((prev) => prev.filter((expense) => expense.id !== id));
-  };
 
   const addGoal = (goal: Omit<Goal, "id">) => {
     const newGoal: Goal = {
@@ -133,11 +103,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   return (
     <DataContext.Provider
       value={{
-        expenses,
         goals,
-        addExpense,
-        updateExpense,
-        deleteExpense,
         addGoal,
         updateGoal,
         deleteGoal,

@@ -9,4 +9,4 @@ const pool = new Pool({
 })
 export const db = drizzle({ client: pool });
 
-export * from "./db/schema.js"
+export * from "@financial-planner/models"

@@ -1,5 +1,5 @@
 {
-  "name": "@financial-planner/db",
+  "name": "@financial-planner/models",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,12 +10,6 @@
     }
   },
   "scripts": {
-    "dev": "docker compose up -d",
-    "db:stop": "docker compose down",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio",
     "build": "tsc"
   },
   "devDependencies": {
@@ -25,7 +19,6 @@
     "tsx": "^4.21.0"
   },
   "dependencies": {
-    "@financial-planner/models": "*",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",
     "pg": "^8.16.3",

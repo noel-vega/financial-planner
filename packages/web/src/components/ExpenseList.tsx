@@ -1,176 +1,114 @@
 import { useState, useMemo } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import type { Expense } from "@/types/expense";
-import { Pencil, Filter, Receipt } from "lucide-react";
-import { ExpenseForm } from "@/components/ExpenseForm";
+import { Receipt } from "lucide-react";
+import { AddExpenseForm } from "@/components/ExpenseForm";
 import { ExpenseChart } from "@/components/ExpenseChart";
+import { ExpenseTable } from "@/components/ExpenseTable";
+import { ExpenseCardList } from "@/components/ExpenseCardList";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search } from "lucide-react";
+import type { Expense } from "@financial-planner/api";
 
 interface ExpenseListProps {
-	expenses: Expense[];
-	onDeleteExpense: (id: string) => void;
-	onUpdateExpense: (expense: Expense) => void;
-	onAddExpense: (expense: Omit<Expense, "id">) => void;
+  expenses: Expense[];
 }
 
-export function ExpenseList({
-	expenses,
-	onDeleteExpense,
-	onUpdateExpense,
-	onAddExpense,
-}: ExpenseListProps) {
-	const [selectedCategory, setSelectedCategory] = useState<string>("All");
+export function ExpenseList({ expenses }: ExpenseListProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
 
-	const filteredExpenses = useMemo(() => {
-		if (selectedCategory === "All") {
-			return expenses;
-		}
-		return expenses.filter((expense) => expense.category === selectedCategory);
-	}, [expenses, selectedCategory]);
+  // Get unique categories
+  const availableCategories = useMemo(() => {
+    const categories = new Set(expenses.map((e) => e.category));
+    return Array.from(categories).sort();
+  }, [expenses]);
 
-	const formatCurrency = (amount: number) => {
-		return new Intl.NumberFormat("en-US", {
-			style: "currency",
-			currency: "USD",
-		}).format(amount);
-	};
+  // Filter expenses based on search and category
+  const filteredExpenses = useMemo(() => {
+    return expenses.filter((expense) => {
+      // Category filter
+      const matchesCategory =
+        categoryFilter === "all" || expense.category === categoryFilter;
 
-	const formatDate = (dateString: string) => {
-		return new Date(dateString).toLocaleDateString("en-US", {
-			month: "short",
-			day: "numeric",
-			year: "numeric",
-		});
-	};
+      // Search filter (searches name, category, and amount)
+      const matchesSearch =
+        searchTerm === "" ||
+        expense.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        expense.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        expense.amount.toString().includes(searchTerm);
 
-	const getCategoryColor = (category: string) => {
-		const colors: Record<string, string> = {
-			Housing: "bg-blue-500",
-			Transportation: "bg-green-500",
-			Food: "bg-yellow-500",
-			Utilities: "bg-purple-500",
-			Entertainment: "bg-pink-500",
-			Healthcare: "bg-red-500",
-			Insurance: "bg-indigo-500",
-			Childcare: "bg-cyan-500",
-			Legal: "bg-amber-500",
-			Savings: "bg-emerald-500",
-			Debt: "bg-orange-500",
-			Other: "bg-gray-500",
-		};
-		return colors[category] || "bg-gray-500";
-	};
+      return matchesCategory && matchesSearch;
+    });
+  }, [expenses, searchTerm, categoryFilter]);
 
-	// Get unique categories from expenses
-	const availableCategories = useMemo(() => {
-		const categories = new Set(expenses.map((e) => e.category));
-		return Array.from(categories).sort();
-	}, [expenses]);
+  return (
+    <div>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">Monthly Expenses</h2>
+          <p className="text-muted-foreground">
+            Track and manage your monthly expenses
+          </p>
+        </div>
+      </div>
 
-	return (
-		<div>
-			<div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-				<div>
-					<h2 className="text-2xl font-bold">Monthly Expenses</h2>
-					<p className="text-muted-foreground">
-						Track and manage your monthly expenses
-					</p>
-				</div>
-				<ExpenseForm onAddExpense={onAddExpense} />
-			</div>
+      {expenses.length === 0 ? (
+        <Card>
+          <CardContent className="text-center py-12 text-muted-foreground">
+            <Receipt className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p>No expenses added yet. Click "Add Expense" to get started.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-6">
+          {/* Pie Chart */}
+          <ExpenseChart expenses={expenses} />
 
-			{expenses.length === 0 ? (
-				<Card>
-					<CardContent className="text-center py-12 text-muted-foreground">
-						<Receipt className="h-12 w-12 mx-auto mb-4 opacity-50" />
-						<p>No expenses added yet. Click "Add Expense" to get started.</p>
-					</CardContent>
-				</Card>
-			) : (
-				<div className="space-y-6">
-					{/* Pie Chart */}
-					<ExpenseChart expenses={expenses} />
+          {/* Filters - Shared by both mobile and desktop */}
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="relative flex-1 w-full sm:max-w-sm">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search expenses..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-8"
+              />
+            </div>
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="w-full sm:w-[180px]">
+                <SelectValue placeholder="Filter by category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {availableCategories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <AddExpenseForm />
+          </div>
 
-					{/* Category Filter */}
-					<div>
-						<div className="flex items-center gap-2 mb-3">
-							<Filter className="h-4 w-4 text-muted-foreground" />
-							<span className="text-sm font-medium">Filter by Category</span>
-						</div>
-						<div className="flex flex-wrap gap-2">
-							<Button
-								variant={selectedCategory === "All" ? "default" : "outline"}
-								size="sm"
-								onClick={() => setSelectedCategory("All")}
-							>
-								All ({expenses.length})
-							</Button>
-							{availableCategories.map((category) => {
-								const count = expenses.filter(
-									(e) => e.category === category,
-								).length;
-								return (
-									<Button
-										key={category}
-										variant={
-											selectedCategory === category ? "default" : "outline"
-										}
-										size="sm"
-										onClick={() => setSelectedCategory(category)}
-									>
-										{category} ({count})
-									</Button>
-								);
-							})}
-						</div>
-					</div>
+          {/* Mobile: Card List (hidden on md and up) */}
+          <div className="md:hidden">
+            <ExpenseCardList expenses={filteredExpenses} />
+          </div>
 
-					{/* Expense List */}
-					<div className="space-y-3">
-						{filteredExpenses.map((expense) => (
-							<Card key={expense.id}>
-								<CardContent className="p-4">
-									<div className="flex items-center justify-between gap-4">
-										<div className="flex-1 min-w-0">
-											<div className="flex items-center gap-2 mb-1">
-												<h3 className="font-semibold text-base">
-													{expense.name}
-												</h3>
-												<Badge className={getCategoryColor(expense.category)}>
-													{expense.category}
-												</Badge>
-											</div>
-											<div className="text-sm text-muted-foreground">
-												{formatDate(expense.date)}
-											</div>
-										</div>
-										<div className="flex items-center gap-3 shrink-0">
-											<div className="text-xl font-bold">
-												{formatCurrency(expense.amount)}
-											</div>
-											<ExpenseForm
-												expense={expense}
-												onUpdateExpense={onUpdateExpense}
-												onDeleteExpense={onDeleteExpense}
-												trigger={
-													<Button
-														variant="ghost"
-														size="icon"
-														className="h-8 w-8"
-													>
-														<Pencil className="h-4 w-4" />
-													</Button>
-												}
-											/>
-										</div>
-									</div>
-								</CardContent>
-							</Card>
-						))}
-					</div>
-				</div>
-			)}
-		</div>
-	);
+          {/* Desktop: Table (hidden on mobile, visible from md and up) */}
+          <div className="hidden md:block">
+            <ExpenseTable expenses={filteredExpenses} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

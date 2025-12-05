@@ -9,7 +9,18 @@ import { calculateTotalMonthlyIncome } from "@/types/user";
 
 export const Route = createFileRoute("/overview")({
   beforeLoad: async () => {
-    await queryClient.ensureQueryData(trpc.users.queryOptions())
+    const queryOptions = {
+      userList: trpc.user.list.queryOptions(),
+      expensesList: trpc.expenses.list.queryOptions()
+    }
+    const userList = await queryClient.ensureQueryData(queryOptions.userList)
+    const expensesList = await queryClient.ensureQueryData(queryOptions.expensesList)
+    return {
+      initialData: {
+        userList, expensesList
+      },
+      queryOptions
+    }
   },
   component: OverviewPage,
 });
@@ -17,7 +28,6 @@ export const Route = createFileRoute("/overview")({
 function OverviewPage() {
   const {
     goals,
-    expenses,
     addGoal,
     updateGoal,
     deleteGoal,
@@ -25,11 +35,13 @@ function OverviewPage() {
     updateContribution,
     deleteContribution,
   } = useData();
-  const usersListQuery = useQuery(trpc.users.queryOptions())
+  const { initialData, queryOptions } = Route.useRouteContext()
+  const usersListQuery = useQuery({ ...queryOptions.userList, initialData: initialData.userList })
+  const expensesListQuery = useQuery({ ...queryOptions.expensesList, initialData: initialData.expensesList })
 
   const totalExpenses = useMemo(() => {
-    return expenses.reduce((sum, expense) => sum + expense.amount, 0);
-  }, [expenses]);
+    return expensesListQuery.data.reduce((sum, expense) => sum + expense.amount, 0);
+  }, [expensesListQuery.data]);
 
   const monthlyIncome = calculateTotalMonthlyIncome(usersListQuery.data ?? []);
   return (

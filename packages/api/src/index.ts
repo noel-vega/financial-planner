@@ -5,5 +5,12 @@ export type { AppRouter } from "./trpc/_app.js"
 export type RouterOutputs = inferRouterOutputs<typeof appRouter>
 export type RouterInputs = inferRouterInputs<typeof appRouter>
 
-export type User = RouterOutputs['users'][number]
-export type UserList = RouterOutputs['users']
+export type User = RouterOutputs['user']['list'][number]
+export type UserList = RouterOutputs['user']['list']
+
+
+export type Expense = RouterOutputs['expenses']['list'][number]
+export type ExpensesList = RouterOutputs['expenses']['list']
+export type InsertExpense = RouterInputs['expenses']['insert']
+
+export * from "@financial-planner/models"

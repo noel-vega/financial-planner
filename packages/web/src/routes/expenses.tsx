@@ -1,22 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ExpenseList } from "@/components/ExpenseList";
-import { useData } from "@/contexts/DataContext";
+import { queryClient, trpc } from "@/lib/trpc";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/expenses")({
-	component: ExpensesPage,
+  beforeLoad: async () => {
+    const queryOptions = trpc.expenses.list.queryOptions()
+    const initialData = await queryClient.ensureQueryData(queryOptions)
+    return { initialData, queryOptions }
+  },
+  component: ExpensesPage,
 });
 
 function ExpensesPage() {
-	const { expenses, addExpense, updateExpense, deleteExpense } = useData();
-
-	return (
-		<div className="container mx-auto py-8 px-4 max-w-6xl">
-			<ExpenseList
-				expenses={expenses}
-				onDeleteExpense={deleteExpense}
-				onUpdateExpense={updateExpense}
-				onAddExpense={addExpense}
-			/>
-		</div>
-	);
+  const { initialData, queryOptions } = Route.useRouteContext()
+  const expensesQuery = useQuery({ ...queryOptions, initialData })
+  return (
+    <div className="container mx-auto py-8 px-4 max-w-6xl">
+      <ExpenseList
+        expenses={expensesQuery.data}
+      />
+    </div>
+  );
 }
