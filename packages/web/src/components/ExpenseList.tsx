@@ -32,16 +32,12 @@ export function ExpenseList({ expenses }: ExpenseListProps) {
   // Filter expenses based on search and category
   const filteredExpenses = useMemo(() => {
     return expenses.filter((expense) => {
-      // Category filter
       const matchesCategory =
         categoryFilter === "all" || expense.category === categoryFilter;
 
-      // Search filter (searches name, category, and amount)
       const matchesSearch =
         searchTerm === "" ||
-        expense.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        expense.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        expense.amount.toString().includes(searchTerm);
+        expense.name.toLowerCase().includes(searchTerm.toLowerCase())
 
       return matchesCategory && matchesSearch;
     });
@@ -58,6 +54,34 @@ export function ExpenseList({ expenses }: ExpenseListProps) {
         </div>
       </div>
 
+      {/* Filters - Shared by both mobile and desktop */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center mb-4">
+        <div className="relative flex-1 w-full sm:max-w-sm">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search expenses..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-8"
+          />
+        </div>
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+          <SelectTrigger className="w-full sm:w-[180px]">
+            <SelectValue placeholder="Filter by category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Categories</SelectItem>
+            {availableCategories.map((category) => (
+              <SelectItem key={category} value={category}>
+                {category}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <AddExpenseForm />
+      </div>
+
+
       {expenses.length === 0 ? (
         <Card>
           <CardContent className="text-center py-12 text-muted-foreground">
@@ -66,40 +90,13 @@ export function ExpenseList({ expenses }: ExpenseListProps) {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-6">
-          {/* Filters - Shared by both mobile and desktop */}
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-            <div className="relative flex-1 w-full sm:max-w-sm">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search expenses..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-8"
-              />
-            </div>
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-full sm:w-[180px]">
-                <SelectValue placeholder="Filter by category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {availableCategories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <AddExpenseForm />
-          </div>
-
-          {/* Mobile: Card List (hidden on md and up) */}
+        <div>
+          {/* Mobile */}
           <div className="md:hidden">
             <ExpenseCardList expenses={filteredExpenses} />
           </div>
 
-          {/* Desktop: Table (hidden on mobile, visible from md and up) */}
+          {/* Desktop */}
           <div className="hidden md:block">
             <ExpenseTable expenses={filteredExpenses} />
           </div>

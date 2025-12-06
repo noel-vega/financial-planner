@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { ExecutiveSummary } from "@/components/ExecutiveSummary";
 import { GoalList } from "@/components/GoalList";
-import { useData } from "@/contexts/DataContext";
 import { queryClient, trpc } from "@/lib/trpc";
 import { useQuery } from "@tanstack/react-query";
 import { calculateTotalMonthlyIncome } from "@/types/user";
@@ -11,13 +10,15 @@ export const Route = createFileRoute("/overview")({
   beforeLoad: async () => {
     const queryOptions = {
       userList: trpc.user.list.queryOptions(),
-      expensesList: trpc.expenses.list.queryOptions()
+      expensesList: trpc.expenses.list.queryOptions(),
+      goalsList: trpc.goals.list.queryOptions()
     }
     const userList = await queryClient.ensureQueryData(queryOptions.userList)
     const expensesList = await queryClient.ensureQueryData(queryOptions.expensesList)
+    const goalsList = await queryClient.ensureQueryData(queryOptions.goalsList)
     return {
       initialData: {
-        userList, expensesList
+        userList, expensesList, goalsList
       },
       queryOptions
     }
@@ -26,18 +27,10 @@ export const Route = createFileRoute("/overview")({
 });
 
 function OverviewPage() {
-  const {
-    goals,
-    addGoal,
-    updateGoal,
-    deleteGoal,
-    addContribution,
-    updateContribution,
-    deleteContribution,
-  } = useData();
   const { initialData, queryOptions } = Route.useRouteContext()
   const usersListQuery = useQuery({ ...queryOptions.userList, initialData: initialData.userList })
   const expensesListQuery = useQuery({ ...queryOptions.expensesList, initialData: initialData.expensesList })
+  const goalsListQuery = useQuery({ ...queryOptions.goalsList, initialData: initialData.goalsList })
 
   const totalExpenses = useMemo(() => {
     return expensesListQuery.data.reduce((sum, expense) => sum + expense.amount, 0);
@@ -50,19 +43,11 @@ function OverviewPage() {
         <ExecutiveSummary
           monthlyIncome={monthlyIncome}
           totalExpenses={totalExpenses}
-          goals={goals}
-          users={usersListQuery.data ?? []}
+          goals={goalsListQuery.data}
+          users={usersListQuery.data}
         />
 
-        <GoalList
-          goals={goals}
-          onDeleteGoal={deleteGoal}
-          onUpdateGoal={updateGoal}
-          onAddGoal={addGoal}
-          onAddContribution={addContribution}
-          onUpdateContribution={updateContribution}
-          onDeleteContribution={deleteContribution}
-        />
+        <GoalList goals={goalsListQuery.data} />
       </div>
     </div>
   );

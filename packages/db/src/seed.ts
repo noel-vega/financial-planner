@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { expensesTable, usersTable, type InsertUser, type UpSertExpense } from '@financial-planner/models';
+import { expensesTable, usersTable, type InsertExpense, type InsertUser } from '@financial-planner/models';
 import { db } from './index.js';
 
 async function main() {
@@ -14,7 +14,7 @@ async function main() {
   ];
   await db.insert(usersTable).values(users);
 
-  const expenses: UpSertExpense[] = [
+  const expenses: InsertExpense[] = [
     {
       name: "Rent",
       amount: 900,
