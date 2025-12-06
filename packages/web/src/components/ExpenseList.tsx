@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Receipt } from "lucide-react";
-import { AddExpenseForm } from "@/components/AddExpenseForm";
 import { ExpenseTable } from "@/components/ExpenseTable";
 import { ExpenseCardList } from "@/components/ExpenseCardList";
 import { Input } from "@/components/ui/input";
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
 import type { Expense } from "@financial-planner/api";
+import { AddExpenseForm } from "./AddExpenseForm";
 
 interface ExpenseListProps {
   expenses: Expense[];
@@ -51,7 +51,7 @@ export function ExpenseList({ expenses }: ExpenseListProps) {
     <div>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Monthly Expenses</h2>
+          <h2 className="text-3xl font-bold">Expenses</h2>
           <p className="text-muted-foreground">
             Track and manage your monthly expenses
           </p>
@@ -67,9 +67,6 @@ export function ExpenseList({ expenses }: ExpenseListProps) {
         </Card>
       ) : (
         <div className="space-y-6">
-          {/* Pie Chart */}
-          {/* <ExpenseChart expenses={expenses} /> */}
-
           {/* Filters - Shared by both mobile and desktop */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <div className="relative flex-1 w-full sm:max-w-sm">
