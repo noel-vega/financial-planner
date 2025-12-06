@@ -1,8 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, Target, CreditCard } from "lucide-react";
-import type { Goal } from "@/types/goal";
 import { UserIncomeDialog } from "@/components/UserIncomeDialog";
-import type { User } from "@financial-planner/api";
+import type { Goal, User } from "@financial-planner/api";
 
 interface ExecutiveSummaryProps {
   monthlyIncome: number;
