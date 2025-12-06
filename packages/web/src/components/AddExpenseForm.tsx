@@ -64,7 +64,10 @@ export function AddExpenseForm({ trigger }: ExpenseFormProps) {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>{trigger || defaultTrigger}</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px]">
+			<DialogContent
+				className="sm:max-w-[425px]"
+				onOpenAutoFocus={(e) => e.preventDefault()}
+			>
 				<DialogHeader>
 					<DialogTitle>Add Monthly Expense</DialogTitle>
 					<DialogDescription>
