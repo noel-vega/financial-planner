@@ -13,8 +13,6 @@ import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as OverviewRouteImport } from './routes/overview'
 import { Route as ExpensesRouteImport } from './routes/expenses'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
-import { Route as DemoTableRouteImport } from './routes/demo/table'
 
 const TransactionsRoute = TransactionsRouteImport.update({
   id: '/transactions',
@@ -36,32 +34,18 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
-  id: '/demo/tanstack-query',
-  path: '/demo/tanstack-query',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoTableRoute = DemoTableRouteImport.update({
-  id: '/demo/table',
-  path: '/demo/table',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/expenses': typeof ExpensesRoute
   '/overview': typeof OverviewRoute
   '/transactions': typeof TransactionsRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/expenses': typeof ExpensesRoute
   '/overview': typeof OverviewRoute
   '/transactions': typeof TransactionsRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -69,34 +53,13 @@ export interface FileRoutesById {
   '/expenses': typeof ExpensesRoute
   '/overview': typeof OverviewRoute
   '/transactions': typeof TransactionsRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/expenses'
-    | '/overview'
-    | '/transactions'
-    | '/demo/table'
-    | '/demo/tanstack-query'
+  fullPaths: '/' | '/expenses' | '/overview' | '/transactions'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/expenses'
-    | '/overview'
-    | '/transactions'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-  id:
-    | '__root__'
-    | '/'
-    | '/expenses'
-    | '/overview'
-    | '/transactions'
-    | '/demo/table'
-    | '/demo/tanstack-query'
+  to: '/' | '/expenses' | '/overview' | '/transactions'
+  id: '__root__' | '/' | '/expenses' | '/overview' | '/transactions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -104,8 +67,6 @@ export interface RootRouteChildren {
   ExpensesRoute: typeof ExpensesRoute
   OverviewRoute: typeof OverviewRoute
   TransactionsRoute: typeof TransactionsRoute
-  DemoTableRoute: typeof DemoTableRoute
-  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -138,20 +99,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/table': {
-      id: '/demo/table'
-      path: '/demo/table'
-      fullPath: '/demo/table'
-      preLoaderRoute: typeof DemoTableRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -160,8 +107,6 @@ const rootRouteChildren: RootRouteChildren = {
   ExpensesRoute: ExpensesRoute,
   OverviewRoute: OverviewRoute,
   TransactionsRoute: TransactionsRoute,
-  DemoTableRoute: DemoTableRoute,
-  DemoTanstackQueryRoute: DemoTanstackQueryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
