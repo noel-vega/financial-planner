@@ -14,7 +14,7 @@ export const PAY_FREQUENCIES: PayFrequency[] = [
 export function calculateMonthlyIncome(
   biWeeklyIncome: number,
 ): number {
-  return (biWeeklyIncome * 26) / 12;
+  return biWeeklyIncome * 2
 }
 
 /**

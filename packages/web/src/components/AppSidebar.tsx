@@ -5,6 +5,7 @@ import {
   Wallet,
   ChevronLeft,
   ChevronRight,
+  BanknoteArrowDownIcon,
 } from "lucide-react";
 import {
   Sidebar,
@@ -61,7 +62,20 @@ export function AppSidebar() {
                 >
                   <Link to="/expenses">
                     <Receipt />
-                    <span>Expenses</span>
+                    <span>Monthly Expenses</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={currentPath === "/transactions"}
+                  tooltip="Transations"
+                >
+                  <Link to="/transactions">
+                    <BanknoteArrowDownIcon />
+                    <span>Transactions</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

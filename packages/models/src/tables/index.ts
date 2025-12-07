@@ -19,7 +19,7 @@ export const goalsTable = pgTable("goals", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: varchar({ length: 255 }).notNull(),
   targetAmount: integer().notNull(),
-  monthlyCommitment: integer().notNull(),
+  monthlyCommitment: integer().notNull().default(0),
   createdAt: timestamp({ mode: "date" }).defaultNow().notNull()
 })
 
@@ -32,7 +32,7 @@ export const goalContributionsTable = pgTable("goal_contributions", {
   goalId: integer().notNull().references(() => goalsTable.id, { onDelete: "cascade" }),
   amount: integer().notNull(),
   note: varchar({ length: 255 }),
-  createdAt: timestamp({ mode: "date" }).defaultNow().notNull(),
+  createdAt: timestamp({ mode: "date" }).notNull().defaultNow(),
 })
 
 export const goalContributionsRelations = relations(goalContributionsTable, ({ one }) => ({

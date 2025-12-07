@@ -47,7 +47,7 @@ export function ExpenseList({ expenses }: ExpenseListProps) {
     <div>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="text-3xl font-bold">Expenses</h2>
+          <h2 className="text-3xl font-bold">Monthly Expenses</h2>
           <p className="text-muted-foreground">
             Track and manage your monthly expenses
           </p>

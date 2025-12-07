@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as OverviewRouteImport } from './routes/overview'
 import { Route as ExpensesRouteImport } from './routes/expenses'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoTableRouteImport } from './routes/demo/table'
 
+const TransactionsRoute = TransactionsRouteImport.update({
+  id: '/transactions',
+  path: '/transactions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OverviewRoute = OverviewRouteImport.update({
   id: '/overview',
   path: '/overview',
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/expenses': typeof ExpensesRoute
   '/overview': typeof OverviewRoute
+  '/transactions': typeof TransactionsRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/expenses': typeof ExpensesRoute
   '/overview': typeof OverviewRoute
+  '/transactions': typeof TransactionsRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
@@ -60,6 +68,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/expenses': typeof ExpensesRoute
   '/overview': typeof OverviewRoute
+  '/transactions': typeof TransactionsRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
 }
@@ -69,15 +78,23 @@ export interface FileRouteTypes {
     | '/'
     | '/expenses'
     | '/overview'
+    | '/transactions'
     | '/demo/table'
     | '/demo/tanstack-query'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/expenses' | '/overview' | '/demo/table' | '/demo/tanstack-query'
+  to:
+    | '/'
+    | '/expenses'
+    | '/overview'
+    | '/transactions'
+    | '/demo/table'
+    | '/demo/tanstack-query'
   id:
     | '__root__'
     | '/'
     | '/expenses'
     | '/overview'
+    | '/transactions'
     | '/demo/table'
     | '/demo/tanstack-query'
   fileRoutesById: FileRoutesById
@@ -86,12 +103,20 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ExpensesRoute: typeof ExpensesRoute
   OverviewRoute: typeof OverviewRoute
+  TransactionsRoute: typeof TransactionsRoute
   DemoTableRoute: typeof DemoTableRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/transactions': {
+      id: '/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof TransactionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/overview': {
       id: '/overview'
       path: '/overview'
@@ -134,6 +159,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ExpensesRoute: ExpensesRoute,
   OverviewRoute: OverviewRoute,
+  TransactionsRoute: TransactionsRoute,
   DemoTableRoute: DemoTableRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
 }
