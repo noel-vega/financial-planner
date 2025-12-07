@@ -22,9 +22,7 @@ services:
 
   # Database Migration Runner
   db-migrate:
-    build:
-      context: .
-      dockerfile: Dockerfile.migrate
+    image: registry.noelvega.dev/financial-planner-migrate:latest
     container_name: financial-planner-db-migrate
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
@@ -37,9 +35,7 @@ services:
 
   # API Server
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile.api
+    image: registry.noelvega.dev/financial-planner-api:latest
     container_name: financial-planner-api
     restart: unless-stopped
     environment:
@@ -73,9 +69,7 @@ services:
 
   # Web Frontend
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile.web
+    image: registry.noelvega.dev/financial-planner-web:latest
     container_name: financial-planner-web
     restart: unless-stopped
     depends_on:
