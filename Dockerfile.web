@@ -1,0 +1,47 @@
+FROM node:24-alpine AS base
+
+# Dependencies Stage
+FROM base AS deps
+WORKDIR /app
+
+COPY package*.json ./
+COPY turbo.json ./
+COPY packages/web/package*.json ./packages/web/
+COPY packages/api/package*.json ./packages/api/
+COPY packages/db/package*.json ./packages/db/
+
+RUN npm ci
+
+# Builder Stage
+FROM base AS builder
+WORKDIR /app
+
+# Copy Dependencies
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy all packages source
+COPY packages ./packages
+COPY package*.json ./
+COPY turbo.json ./
+
+# Build using Turbo - builds web and its dependencies (api, models)
+RUN npx turbo build --filter=@financial-planner/web
+
+# Production Stage - Nginx
+FROM nginx:alpine AS runner
+
+# Copy built static files
+COPY --from=builder /app/packages/web/dist /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY packages/web/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

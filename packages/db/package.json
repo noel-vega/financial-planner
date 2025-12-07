@@ -25,10 +25,8 @@
     "tsx": "^4.21.0"
   },
   "dependencies": {
-    "@financial-planner/models": "*",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.7",
-    "pg": "^8.16.3",
-    "zod": "^4.1.13"
+    "pg": "^8.16.3"
   }
 }

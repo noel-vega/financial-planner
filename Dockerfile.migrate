@@ -1,0 +1,31 @@
+FROM node:24-alpine AS base
+
+# Dependencies Stage
+FROM base AS deps
+WORKDIR /app
+
+COPY package*.json ./
+COPY turbo.json ./
+COPY packages/db/package*.json ./packages/db/
+
+RUN npm ci
+
+# Migration Runner Stage
+FROM base AS runner
+WORKDIR /app
+
+# Copy dependencies
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy package files
+COPY package*.json ./
+COPY turbo.json ./
+
+# Copy db package (contains tables and migrations)
+COPY packages/db ./packages/db
+
+# Set working directory to db package
+WORKDIR /app/packages/db
+
+# Command will be overridden in docker-compose
+CMD ["npm", "run", "db:migrate"]

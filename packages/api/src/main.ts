@@ -2,7 +2,6 @@ import { config } from 'dotenv';
 config({ path: "../../.env" })
 
 import express from "express"
-import { db, usersTable } from "@financial-planner/db"
 import cors from "cors"
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { appRouter } from './trpc/_app.js';
@@ -24,12 +23,11 @@ app.use("/trpc", trpcExpress.createExpressMiddleware({
   createContext,
 }))
 
-app.get('/', async (_, res) => {
-  const users = await db.select().from(usersTable)
-  res.json(users)
+app.get('/health', async (_, res) => {
+  res.send("Healthy")
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Listening on port ${port}`)
 })
 

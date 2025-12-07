@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: financial-planner-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - financial-planner-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Database Migration Runner
+  db-migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrate
+    container_name: financial-planner-db-migrate
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - financial-planner-network
+    restart: "no"
+
+  # API Server
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: financial-planner-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      PORT: 3000
+    depends_on:
+      db:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
+    networks:
+      - traefik
+      - financial-planner-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      # Route /trpc requests to API
+      - "traefik.http.routers.api.rule=Host(`${DOMAIN}`) && PathPrefix(`/trpc`)"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.api.loadbalancer.server.port=3000"
+      # Priority: API routes should be checked first
+      - "traefik.http.routers.api.priority=2"
+
+  # Web Frontend
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: financial-planner-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    networks:
+      - traefik
+      - financial-planner-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      # Route all other requests to Web
+      - "traefik.http.routers.web.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.web.entrypoints=websecure"
+      - "traefik.http.routers.web.tls.certresolver=letsencrypt"
+      - "traefik.http.services.web.loadbalancer.server.port=80"
+      - "traefik.http.routers.web.priority=1"
+
+networks:
+  traefik:
+    external: true
+  financial-planner-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

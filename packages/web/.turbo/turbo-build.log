@@ -1,0 +1,25 @@
+
+> @financial-planner/web@0.0.0 build
+> vite build && tsc
+
+vite v7.2.6 building client environment for production...
+transforming...
+
+[@tanstack/devtools-vite] Removed devtools code from: /src/routes/__root.tsx
+
+✓ 2258 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                           0.73 kB │ gzip:   0.40 kB
+dist/assets/index-CqSd7jdE.css           70.53 kB │ gzip:  12.36 kB
+dist/assets/index-S0vtJIsL.js             0.12 kB │ gzip:   0.13 kB
+dist/assets/transactions-BzoLHcU3.js      0.12 kB │ gzip:   0.13 kB
+dist/assets/tanstack-query-C0O7a_fB.js    0.98 kB │ gzip:   0.58 kB
+dist/assets/useQuery-ChnHE82h.js          8.74 kB │ gzip:   3.17 kB
+dist/assets/expenses-Dvnr1hJU.js         38.82 kB │ gzip:  12.03 kB
+dist/assets/overview-CmxValo6.js         53.89 kB │ gzip:  15.84 kB
+dist/assets/index-DPI_2iB4.js            58.15 kB │ gzip:  16.81 kB
+dist/assets/zodResolver-BcSL5KSV.js     277.68 kB │ gzip:  68.43 kB
+dist/assets/index-BH_u4xTk.js           457.19 kB │ gzip: 144.65 kB
+dist/assets/table-BvYVvNW6.js           463.96 kB │ gzip: 158.85 kB
+✓ built in 3.10s
