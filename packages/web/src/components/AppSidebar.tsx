@@ -62,7 +62,7 @@ export function AppSidebar() {
                 >
                   <Link to="/expenses">
                     <Receipt />
-                    <span>Monthly Expenses</span>
+                    <span>Expenses</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
