@@ -58,7 +58,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
       # Route /trpc requests to API
-      - "traefik.http.routers.api.rule=Host(`${DOMAIN}`) && PathPrefix(`/trpc`)"
+      - "traefik.http.routers.api.rule=Host(`${DOMAIN}`) && (PathPrefix(`/trpc`) || Path(`/health`))"
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls.certresolver=letsencrypt"
       - "traefik.http.services.api.loadbalancer.server.port=3000"
